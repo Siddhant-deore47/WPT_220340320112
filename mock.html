@@ -1,0 +1,88 @@
+<html>
+
+	<head>
+		<title>WPT Exam</title>
+	</head>
+
+	<script src="jquery-3.5.1.min.js"></script>
+	<script>//our scrip will come here 
+
+		$(() => {
+			$("#add").click(() => {
+
+				let input = { bookid: $("#bookid").val(), bookname: $("#bookname").val(), bookprice: $("#bookprice").val() };
+
+				let object = {
+					data: input,
+					url: 'http://localhost:8081/addbook',
+					type: "get",
+					datatype: "json",
+
+					success: (response) => {
+						if (response.status == true) {
+							$("#msg").html("Book Added");
+							$("#bookid").val();
+							$("#bookname").val();
+							$("#bookprice").val();
+							showBooks();
+						} else {
+							$("#msg").html("Error adding book");
+						}
+					},
+					error: (error) => {
+						$("#msg").html("Error adding book");
+					},
+				};
+				$.ajax(object);
+			});
+
+			function showBooks() {
+				$.ajax({
+					data: {},
+					url: 'http://localhost:8081/showbooks',
+					type: "get",
+					datatype: "json",
+
+					success: (response) => {
+						if (response.length > 0) {
+
+							let display = "";
+							for (let i = 0; i < response.length; i++) {
+								display += "<br>" + " " + parseInt(response[i].bookid) + " " + response[i].bookname + " " + parseInt(response[i].price);
+							}
+							$("#allbooks").html(display);
+						} else {
+							$("#allbooks").html("No Book is Present");
+						}
+					},
+
+					error: (error) => {
+						$("#msg").html("Error adding book");
+					},
+				});
+			}
+			showBooks();
+		});
+
+	</script>
+
+	<body>
+
+		<div>
+			<label for="bookid">Book ID : </label>
+			<input type="text" id="bookid">
+			<span id="msg">Message</span><br><br>
+			<label for="bookname">Book Name : </label>
+			<input type="text" id="bookname"><br><br>
+			<label for="bookprice">Price : </label>
+			<input type="text" id="bookprice"><br><br>
+			<button id="add">Add Book</button><br><br>
+			<h4>All Books</h4>
+			<span id="allbooks"></span>
+		</div>
+
+
+	</body>
+
+
+</html>
